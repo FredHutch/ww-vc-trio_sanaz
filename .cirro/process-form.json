@@ -1,0 +1,50 @@
+{
+  "form": {
+    "type": "object",
+    "properties": {
+      "bedLocation": {
+        "title": "Regions of Interest (BED)",
+        "description": "Select BED file which has been added to the References for this project.",
+        "type": "string",
+        "pathType": "references",
+        "file": "**/genome_bed/**/regions.bed"
+      },
+      "annovar_protocols": {
+        "type": "array",
+        "title": "ANNOVAR Protocols",
+        "description": "Select ANNOVAR protocols to run.",
+        "items": {
+          "type": "string",
+          "enum": [
+            "refGene",
+            "knownGene",
+            "cosmic70",
+            "esp6500siv2_all",
+            "clinvar_20180603",
+            "gnomad211_exome"
+          ]
+        },
+        "uniqueItems": true,
+        "default": [
+          "refGene",
+          "knownGene",
+          "cosmic70",
+          "esp6500siv2_all",
+          "clinvar_20180603",
+          "gnomad211_exome"
+        ]
+      },
+      "annovar_operation": {
+        "type": "string",
+        "title": "ANNOVAR Operation",
+        "description": "Provide the -operation flag for ANNOVAR.",
+        "default": "g,f,f,f,f,f"
+      }
+    }
+  },
+  "ui": {
+    "annovar_protocols": {
+      "ui:widget": "checkboxes"
+    }  
+  }
+}

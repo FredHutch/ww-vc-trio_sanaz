@@ -44,12 +44,12 @@ workflow ww_vc_trio {
 
   Array[Object] batchInfo = read_objects(batchFile)
   # Docker containers this workflow has been designed for
-  String GATKDocker = "ghcr.io/getwilds/gatk:4.3.0.0"
-  String bwaDocker = "ghcr.io/getwilds/bwa:0.7.17"
-  String bedtoolsDocker = "ghcr.io/getwilds/bedtools:2.31.1" 
-  String bcftoolsDocker = "ghcr.io/getwilds/bcftools:1.19"
-  String annovarDocker = "ghcr.io/getwilds/annovar:~{ref_name}"
-  String RDocker = "ghcr.io/getwilds/consensus:0.1.1"
+  String GATKDocker = "getwilds/gatk:4.3.0.0"
+  String bwaDocker = "getwilds/bwa:0.7.17"
+  String bedtoolsDocker = "getwilds/bedtools:2.31.1" 
+  String bcftoolsDocker = "getwilds/bcftools:1.19"
+  String annovarDocker = "getwilds/annovar:~{ref_name}"
+  String RDocker = "getwilds/consensus:0.1.1"
 
   Int bwaThreads = 16
 
@@ -313,7 +313,7 @@ task ApplyBaseRecalibrator {
 
   command <<<
     set -eo pipefail
-    gatk --java-options "-Xms8g" \
+    gatk --java-options "-Xms8g -Xmx8g" \
       BaseRecalibrator \
         -R "~{ref_fasta}" \
         -I "~{input_bam}" \
@@ -323,7 +323,7 @@ task ApplyBaseRecalibrator {
         --intervals ~{intervals} \
         --interval-padding 100 \
         --verbosity WARNING
-    gatk --java-options "-Xms48g" \
+    gatk --java-options "-Xms48g -Xmx48g" \
       ApplyBQSR \
         -bqsr "~{base_file_name}.recal_data.csv" \
         -I "~{input_bam}" \
@@ -465,7 +465,7 @@ task CollectHsMetrics {
 
   command <<<
     set -eo pipefail
-    gatk --java-options "-Xms2g" \
+    gatk --java-options "-Xms64g -Xmx64g" \
       CollectHsMetrics \
       --INPUT "~{input_bam}" \
       --OUTPUT "~{base_file_name}.picard.metrics.txt" \
@@ -484,8 +484,8 @@ task CollectHsMetrics {
 
   runtime {
     docker: docker
-    cpu: 1
-    memory: "4 GB"
+    cpu: 8
+    memory: "64 GB"
   }
 }
 
@@ -509,7 +509,7 @@ task consensusProcessingR {
 
   runtime {
     cpu: 1
-    memory: "2 GB"
+    memory: "8 GB"
     docker: docker
   }
 }
@@ -531,7 +531,7 @@ task HaplotypeCaller {
 
   command <<<
     set -eo pipefail
-    gatk --java-options "-Xms8g" \
+    gatk --java-options "-Xms8g -Xmx8g" \
       HaplotypeCaller \
       -R "~{ref_fasta}" \
       -I "~{input_bam}" \
@@ -568,7 +568,7 @@ task MergeBamAlignment {
 
   command <<<
     set -eo pipefail
-    gatk --java-options "-Dsamjdk.compression_level=5 -XX:-UseGCOverheadLimit -Xms12g" \
+    gatk --java-options "-Dsamjdk.compression_level=5 -XX:-UseGCOverheadLimit -Xms12g -Xmx12g" \
       MergeBamAlignment \
      --ALIGNED_BAM "~{aligned_bam}" \
      --UNMAPPED_BAM "~{unmapped_bam}" \
@@ -609,7 +609,7 @@ task Mutect2TumorOnly {
 
   command <<<
     set -eo pipefail
-    gatk --java-options "-Xms16g" \
+    gatk --java-options "-Xms16g -Xmx16g" \
       Mutect2 \
         -R "~{ref_fasta}" \
         -I "~{input_bam}" \
@@ -618,7 +618,7 @@ task Mutect2TumorOnly {
         --interval-padding 100 \
         --germline-resource "~{genomeReference}" \
         --verbosity WARNING
-    gatk --java-options "-Xms16g" \
+    gatk --java-options "-Xms16g -Xmx16g" \
       FilterMutectCalls \
         -V preliminary.vcf.gz \
         -O "~{base_file_name}.mutect2.vcf.gz" \
@@ -650,13 +650,13 @@ task SamToFastq {
   # this now sorts first in case the original bam is not queryname sorted or mark dup spark will complain
   command <<<
     set -eo pipefail
-    gatk --java-options "-Dsamjdk.compression_level=5 -Xms12g" \
+    gatk --java-options "-Dsamjdk.compression_level=5 -Xms12g -Xmx12g" \
       SortSam \
      --INPUT "~{input_bam}" \
      --OUTPUT sorted.bam \
      --SORT_ORDER queryname \
      --VERBOSITY WARNING
-    gatk --java-options "-Dsamjdk.compression_level=5 -Xms8g" \
+    gatk --java-options "-Dsamjdk.compression_level=5 -Xms8g -Xmx8g" \
       SamToFastq \
       --INPUT sorted.bam \
       --FASTQ "~{base_file_name}.fastq" \
@@ -687,7 +687,7 @@ task SortBed {
   command <<<
     set -eo pipefail
     sort -k1,1V -k2,2n -k3,3n "~{unsorted_bed}" > sorted.bed
-    gatk --java-options "-Dsamjdk.compression_level=5 -Xms4g" \
+    gatk --java-options "-Dsamjdk.compression_level=5 -Xms4g -Xmx4g" \
       BedToIntervalList \
       --INPUT sorted.bed \
       --OUTPUT sorted.interval_list \
@@ -718,7 +718,7 @@ task MarkDuplicates {
   # This works because the output of BWA is query-grouped and therefore, so is the output of MergeBamAlignment.
   # While query-grouped isn't actually query-sorted, it's good enough for MarkDuplicates with ASSUME_SORT_ORDER="queryname"
   command <<<
-    gatk --java-options "-Dsamjdk.compression_level=5 -Xms16g" \
+    gatk --java-options "-Dsamjdk.compression_level=5 -Xms16g -Xmx16g" \
       MarkDuplicates \
       --INPUT "~{input_bam}" \
       --OUTPUT "~{output_bam_basename}.bam" \
@@ -751,7 +751,7 @@ task SortSam {
 
   command <<<
     set -eo pipefail
-    gatk --java-options "-Dsamjdk.compression_level=5 -Xms12g" \
+    gatk --java-options "-Dsamjdk.compression_level=5 -Xms12g -Xmx12g" \
       SortSam \
      --INPUT "~{input_bam}" \
      --OUTPUT "~{base_file_name}.sorted.bam" \

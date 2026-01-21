@@ -1,0 +1,38 @@
+{
+  "inputs": {
+    "ww_vc_trio.batchFile": "batch_file.tsv",
+    "ww_vc_trio.bedLocation": "$.params.dataset.paramJson.bedLocation",
+    "ww_vc_trio.ref_name": "hg19",
+    "ww_vc_trio.ref_fasta": "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Sequence/BWAIndex/human_g1k_v37_decoy.fasta",
+    "ww_vc_trio.ref_fasta_index": "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Sequence/BWAIndex/human_g1k_v37_decoy.fasta.fai",
+    "ww_vc_trio.ref_dict": "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Sequence/BWAIndex/human_g1k_v37_decoy.dict",
+    "ww_vc_trio.ref_pac": "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Sequence/BWAIndex/human_g1k_v37_decoy.fasta.pac",
+    "ww_vc_trio.ref_sa": "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Sequence/BWAIndex/human_g1k_v37_decoy.fasta.sa",
+    "ww_vc_trio.ref_amb": "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Sequence/BWAIndex/human_g1k_v37_decoy.fasta.amb",
+    "ww_vc_trio.ref_ann": "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Sequence/BWAIndex/human_g1k_v37_decoy.fasta.ann",
+    "ww_vc_trio.ref_bwt": "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Sequence/BWAIndex/human_g1k_v37_decoy.fasta.bwt",
+    "ww_vc_trio.dbSNP_vcf_index": "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Annotation/GATKBundle/dbsnp_138.b37.vcf.gz.tbi",
+    "ww_vc_trio.dbSNP_vcf": "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Annotation/GATKBundle/dbsnp_138.b37.vcf.gz",
+    "ww_vc_trio.known_indels_sites_indices": [
+      "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Annotation/GATKBundle/Mills_and_1000G_gold_standard.indels.b37.vcf.gz.tbi"
+    ],
+    "ww_vc_trio.known_indels_sites_VCFs": [
+      "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Annotation/GATKBundle/Mills_and_1000G_gold_standard.indels.b37.vcf.gz"
+    ],
+    "ww_vc_trio.af_only_gnomad": "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Annotation/GATKBundle/af-only-gnomad.raw.sites.vcf.gz",
+    "ww_vc_trio.af_only_gnomad_index": "s3://pubweb-references/igenomes/Homo_sapiens/GATK/GRCh37/Annotation/GATKBundle/af-only-gnomad.raw.sites.vcf.gz.tbi",
+    "ww_vc_trio.annovar_protocols": "$.params.dataset.paramJson.annovar_protocols",
+    "ww_vc_trio.annovar_operation": "$.params.dataset.paramJson.annovar_operation"
+  },
+  "options": {
+    "workflow_failure_mode": "ContinueWhilePossible",
+    "write_to_cache": true,
+    "read_from_cache": true,
+    "default_runtime_attributes": {
+        "maxRetries": 1
+    },
+    "use_relative_output_paths": true,
+    "final_workflow_outputs_dir": "$.params.dataset.s3|/data/",
+    "final_call_logs_dir": "$.params.dataset.s3|/logs/"  
+  }
+}

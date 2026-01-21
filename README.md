@@ -1,3 +1,6 @@
+> [!WARNING]
+> **This repository has been archived as of 2026-01-12.** The functionality has been migrated and expanded upon in the [WILDS WDL Library](https://github.com/getwilds/wilds-wdl-library) as the [`ww-leukemia` pipeline](https://github.com/getwilds/wilds-wdl-library/tree/main/pipelines/ww-leukemia). Please refer to that instance for the latest versions, documentation, and updates.
+
 # ww-vc-trio
 [![Project Status: Experimental – Useable, some support, not open to feedback, unstable API.](https://getwilds.org/badges/badges/experimental.svg)](https://getwilds.org/badges/#experimental)
 
